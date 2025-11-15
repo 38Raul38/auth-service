@@ -1,0 +1,9 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/AuthService.API/AuthService.API.csproj" />
+    <Project Path="src/AuthService.Application/AuthService.Application.csproj" />
+    <Project Path="src/AuthService.Core/AuthService.Core.csproj" />
+    <Project Path="src/AuthService.Persistence/AuthService.Persistence.csproj" />
+    <Project Path="src\AuthService.AppHost\AuthService.AppHost.csproj" Type="Classic C#" />
+  </Folder>
+</Solution>
