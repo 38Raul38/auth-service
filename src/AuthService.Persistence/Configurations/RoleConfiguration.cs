@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 ﻿using Microsoft.EntityFrameworkCore;
 using AuthService.Core.Models;
 using Microsoft.EntityFrameworkCore;
@@ -14,4 +15,11 @@ public class RoleConfiguration : IEntityTypeConfiguration<Role>
         
         //Many-To-Many
     }
+=======
+﻿namespace AuthService.Persistence.Configurations;
+
+public class RoleConfiguration
+{
+    
+>>>>>>> 65d69c9ca735abdf7fd91f28c094b5514ed5658d
 }

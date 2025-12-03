@@ -1,5 +1,6 @@
 ﻿namespace AuthService.Core.Extensions;
 
+<<<<<<< HEAD
 using Microsoft.AspNetCore.Builder;
 
 public static class ApplicationBuilderExtensions
@@ -15,4 +16,9 @@ public static class ApplicationBuilderExtensions
 
         return app;
     }
+=======
+public class ApplicationBuilderExtensions
+{
+    
+>>>>>>> 65d69c9ca735abdf7fd91f28c094b5514ed5658d
 }

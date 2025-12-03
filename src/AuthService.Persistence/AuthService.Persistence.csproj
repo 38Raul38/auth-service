@@ -10,6 +10,7 @@
     <Folder Include="Extensions\" />
   </ItemGroup>
 
+<<<<<<< HEAD
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Core" Version="2.3.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.11" />
@@ -27,4 +28,6 @@
     <ProjectReference Include="..\AuthService.Core\AuthService.Core.csproj" />
   </ItemGroup>
 
+=======
+>>>>>>> 65d69c9ca735abdf7fd91f28c094b5514ed5658d
 </Project>
