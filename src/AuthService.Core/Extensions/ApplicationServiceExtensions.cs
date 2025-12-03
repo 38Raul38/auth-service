@@ -1,6 +1,5 @@
 ﻿namespace AuthService.Core.Extensions;
 
-<<<<<<< HEAD
 using System;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.DependencyInjection;
@@ -26,9 +25,4 @@ public static class ApplicationServiceExtensions
 
         return services;
     }
-=======
-public class ApplicationServiceExtensions
-{
-    
->>>>>>> 65d69c9ca735abdf7fd91f28c094b5514ed5658d
 }

@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 ﻿using AuthService.Core.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
@@ -14,11 +13,4 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
         builder.Property(e => e.Email).HasMaxLength(128).IsRequired();
         builder.Property(p => p.Password).HasMaxLength(128).IsRequired();
     }
-=======
-﻿namespace AuthService.Persistence.Configurations;
-
-public class UserConfiguration
-{
-    
->>>>>>> 65d69c9ca735abdf7fd91f28c094b5514ed5658d
 }
