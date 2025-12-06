@@ -1,6 +1,107 @@
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Security.Cryptography;
+using System.Text;
+using AuthService.Core.Models;
+using Microsoft.Extensions.Configuration;
+using Microsoft.IdentityModel.Tokens;
+
 namespace AuthService.Application.Utils;
 
 public class TokenManager
 {
+    private readonly IConfiguration _configuration;
+
+    public TokenManager(IConfiguration configuration)
+    {
+        configuration = _configuration;
+    }
+
+    public async Task<string> CreateTokenAsync(User user, IEnumerable<string> roles)
+    {
+        var claims = new List<Claim>
+        {
+            new Claim(ClaimTypes.Name, user.Name),
+            new Claim(ClaimTypes.Email, user.Email)
+        };
+
+        foreach (var role in roles)
+        {
+            claims.Add(new Claim(ClaimTypes.Role, role));
+        }
+        
+        var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration.GetSection("JWT:SecretKey").Value));
+        
+        var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256Signature);
+
+        var securityToken = new JwtSecurityToken(
+            claims: claims,
+            expires: DateTime.UtcNow.AddMinutes(int.Parse(_configuration.GetSection("JWT:Expiration").Value)),
+            issuer: _configuration.GetSection("JWT:Issuer").Value,
+            audience: _configuration.GetSection("JWT:Audience").Value,
+            signingCredentials: credentials);
+        
+        string tokenString = new JwtSecurityTokenHandler().WriteToken(securityToken);
+        
+        return tokenString;
+    }
+
+    public async Task<string> GenerateRefreshTokenAsync(User user, IEnumerable<string> roles)
+    {
+        var randomBytes = RandomNumberGenerator.GetBytes(64);
+        return Convert.ToBase64String(randomBytes);
+    }
     
+    public async Task<string> CreateEmailTokenAsync(ClaimsPrincipal user)
+    {
+        var claim = user.Claims.Where(c => c.Type == ClaimTypes.Email);
+        
+        var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration.GetSection("JWT:EmailKey").Value));
+
+        var signingCred = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256Signature);
+
+        var securityToken = new JwtSecurityToken(
+            claims: claim,
+            expires: DateTime.UtcNow.AddMinutes(3),
+            issuer: _configuration.GetSection("JWT:Issuer").Value,
+            audience: _configuration.GetSection("JWT:Audience").Value,
+            signingCredentials: signingCred);
+
+        string tokenString = new JwtSecurityTokenHandler().WriteToken(securityToken);
+        return tokenString;
+    }
+    
+    public async Task<string> GetEmailFromToken(string token)
+    {
+        var tokenHandler = new JwtSecurityTokenHandler();
+        var securityToken = tokenHandler.ReadToken(token) as JwtSecurityToken;
+
+        if (securityToken == null)
+            throw new SecurityTokenException("Invalid token");
+
+        var email = securityToken.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Email);
+
+        return email.Value;
+    }
+
+    public async Task<bool> ValidateEmailTokenAsync(string token)
+    {
+        var tokenHandler = new JwtSecurityTokenHandler();
+        var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration.GetSection("JWT:EmailKey").Value));
+
+        var validationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidateLifetime = true,
+            ValidateIssuerSigningKey = true,
+            ValidIssuer = _configuration.GetSection("JWT:Issuer").Value,
+            ValidAudience = _configuration.GetSection("JWT:Audience").Value,
+            IssuerSigningKey = securityKey,
+            // ClockSkew = TimeSpan.Zero
+        };
+
+        var principal = await tokenHandler.ValidateTokenAsync(token, validationParameters);
+        return principal.IsValid;
+    }
 }

@@ -11,7 +11,7 @@ public class UserRoleConfiguration : IEntityTypeConfiguration<UserRole>
         builder.HasKey(ux => new { ux.UserId, ux.RoleId });
         builder.Property(u => u.User).IsRequired();
         builder.Property(r => r.Role).IsRequired();
-        
+
         //Many-to-Many
     }
 }

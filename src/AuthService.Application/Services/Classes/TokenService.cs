@@ -1,4 +1,4 @@
-namespace AuthService.Application.Services.Classes;
+﻿namespace AuthService.Application.Services.Classes;
 
 public class TokenService
 {
