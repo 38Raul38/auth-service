@@ -9,8 +9,6 @@ using System.Threading.Tasks;
 
 public interface IAccountService
 {
-    Task<Result> RegisterAsync(RegisterRequestDTO request, CancellationToken cancellationToken = default);
-    Task<Result> LoginAsync(LoginRequestDTO request, CancellationToken cancellationToken = default);
-    Task<Result> RefreshTokenAsync(RefreshTokenRequest request, CancellationToken cancellationToken = default);
-    Task LogoutAsync(string userId, CancellationToken cancellationToken = default);
+    Task<Result> ChangePasswordAsync(ChangePasswordRequest.ChangePasswordRequestDTO requestDTO, CancellationToken cancellationToken = default);
+    Task<Result> ChangeEmailAsync(ChangeEmailRequest.ChangeEmailRequestDTO requestDTO, CancellationToken cancellationToken = default);
 }

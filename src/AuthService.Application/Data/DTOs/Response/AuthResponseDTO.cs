@@ -7,4 +7,4 @@ public class AuthResponseDTO
     public string RefreshToken { get; set; } = null!;
     public DateTime RefreshTokenExpiresAt { get; set; }
     public UserResponseDTO User { get; set; } = null!;
-}
+} 
