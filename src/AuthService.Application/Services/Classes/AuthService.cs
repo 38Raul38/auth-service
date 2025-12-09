@@ -1,6 +1,9 @@
-﻿namespace AuthService.Application.Services.Classes;
+﻿using AuthService.Application.Services.Interfaces;
+using AuthService.Persistance.Context;
 
-public class AuthService
+namespace AuthService.Application.Services.Classes;
+
+public class AuthService : IAuthService
 {
-     
+     private readonly UserDbContext _context;
 }

@@ -1,7 +1,6 @@
 ﻿using AuthService.Application.Data.DTOs.Request;
 using AuthService.Core.Models;
 using AutoMapper;
-using Microsoft.AspNetCore.Identity.Data;
 
 namespace AuthService.Persistence.MappingConfigurations;
 
