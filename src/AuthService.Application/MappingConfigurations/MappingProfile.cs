@@ -2,7 +2,7 @@
 using AuthService.Core.Models;
 using AutoMapper;
 
-namespace AuthService.Persistence.MappingConfigurations;
+namespace AuthService.Application.MappingConfigurations;
 
 public class MappingProfile : Profile
 {

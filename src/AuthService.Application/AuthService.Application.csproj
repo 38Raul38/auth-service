@@ -15,6 +15,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\AuthService.Core\AuthService.Core.csproj" />
+    <ProjectReference Include="..\AuthService.Persistence\AuthService.Persistence.csproj" />
   </ItemGroup>
 
 </Project>
