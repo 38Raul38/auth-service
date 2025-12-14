@@ -7,8 +7,6 @@ using AuthService.Core.Models;
 using AuthService.Persistence.Context;
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
-using Result = FluentResults.Result;
-using Res = AuthService.Application.Data.DTOs.Response.Result;
 namespace AuthService.Application.Services.Classes;
 
 public class AuthService : IAuthService
@@ -54,7 +52,7 @@ public class AuthService : IAuthService
          {
          }
 
-         return Res.Success();
+         return Result.Success();
      }
 
      public async Task<TypeResult<AuthResponseDTO>> LoginAsync(LoginRequestDTO request)
@@ -66,11 +64,31 @@ public class AuthService : IAuthService
              throw new ValidationException("Invalid credentials");
          }
          
+         var roles = await _context.UserRoles
+             .Where(ur => ur.UserId == user.Id)
+             .Select(ur => ur.Role.Name.ToString())
+             .ToListAsync();
+
          
+         var accessToken = await _tokenManager.CreateTokenAsync(user, roles);
+         var refreshToken = await _tokenManager.GenerateRefreshTokenAsync(user, roles);
+         var RefreshTokenExpiryTime = DateTime.UtcNow.AddDays(7);
+         
+         user.RefreshToken = refreshToken;
+         user.RefreshTokenExpiryTime = RefreshTokenExpiryTime;
+
+         // return TypeResult<AuthResponseDTO>.Success(new 
+         // {
+         //     AccessToken = accessToken,
+         //     RefreshToken = refreshToken,
+         //     RefreshTokenExpiryTime = RefreshTokenExpiryTime
+         // }, "Login successful");
+
      }
      
      public async Task<TypeResult<RefreshTokenResponse>> RefreshTokenAsync(RefreshTokenRequest request)
      {
+         
          
      }
      

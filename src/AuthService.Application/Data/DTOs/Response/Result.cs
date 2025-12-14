@@ -13,7 +13,7 @@ public class Result
         StatusCode = statusCode;
     }
 
-    public static FluentResults.Result Success(string message = "Success", int statusCode = 200)
+    public static Result Success(string message = "Success", int statusCode = 200)
     {
         return new Result(message, true, statusCode);
     }

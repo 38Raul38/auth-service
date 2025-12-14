@@ -10,5 +10,7 @@ public class User
     public string Password { get; set; }
     public bool IsConfirmed { get; set; } =  false;
 
+    public string RefreshToken { get; set; }
+    public DateTime RefreshTokenExpiryTime { get; set; }
     public ICollection<Role> Roles  { get; set; }
 }

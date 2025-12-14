@@ -1,6 +1,5 @@
 ﻿using AuthService.Application.Data.DTOs.Request;
 using AuthService.Application.Data.DTOs.Response;
-using Result = FluentResults.Result;
 
 namespace AuthService.Application.Services.Interfaces;
 
