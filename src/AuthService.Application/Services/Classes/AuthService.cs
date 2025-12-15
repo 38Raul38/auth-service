@@ -63,37 +63,83 @@ public class AuthService : IAuthService
          {
              throw new ValidationException("Invalid credentials");
          }
-         
+
          var roles = await _context.UserRoles
              .Where(ur => ur.UserId == user.Id)
              .Select(ur => ur.Role.Name.ToString())
              .ToListAsync();
 
-         
+
          var accessToken = await _tokenManager.CreateTokenAsync(user, roles);
          var refreshToken = await _tokenManager.GenerateRefreshTokenAsync(user, roles);
          var RefreshTokenExpiryTime = DateTime.UtcNow.AddDays(7);
-         
+
          user.RefreshToken = refreshToken;
          user.RefreshTokenExpiryTime = RefreshTokenExpiryTime;
 
-         // return TypeResult<AuthResponseDTO>.Success(new 
-         // {
-         //     AccessToken = accessToken,
-         //     RefreshToken = refreshToken,
-         //     RefreshTokenExpiryTime = RefreshTokenExpiryTime
-         // }, "Login successful");
+         var response = new AuthResponseDTO
+         {
+             AccessToken = accessToken,
+             RefreshToken = refreshToken,
+             RefreshTokenExpiresAt = RefreshTokenExpiryTime
+         };
 
+         return TypeResult<AuthResponseDTO>.Success(
+             message: "Login successful",
+             statusCode: 200,
+             data: response
+         );
      }
-     
+
      public async Task<TypeResult<RefreshTokenResponse>> RefreshTokenAsync(RefreshTokenRequest request)
      {
-         
-         
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.RefreshToken == request.RefreshToken);
+    
+            if (user == null || user.RefreshTokenExpiryTime <= DateTime.UtcNow)
+            {
+                throw new ValidationException("Invalid refresh token");
+            }
+            
+            var roles = await _context.UserRoles
+                .Where(ur => ur.UserId == user.Id)
+                .Select(ur => ur.Role.Name.ToString())
+                .ToListAsync();
+    
+            
+            var newAccessToken = await _tokenManager.CreateTokenAsync(user, roles);
+            var newRefreshToken = await _tokenManager.GenerateRefreshTokenAsync(user, roles);
+            var newRefreshTokenExpiryTime = DateTime.UtcNow.AddDays(7);
+            
+            user.RefreshToken = newRefreshToken;
+            user.RefreshTokenExpiryTime = newRefreshTokenExpiryTime;
+    
+            await _context.SaveChangesAsync();
+    
+            return TypeResult<RefreshTokenResponse>.Success(
+                message: "Token refreshed successfully",
+                statusCode: 200,
+                data: new RefreshTokenResponse(
+                    AccessToken: newAccessToken,
+                    RefreshToken: newRefreshToken,
+                    RefreshTokenExpiresAt: newRefreshTokenExpiryTime
+                )
+            );
      }
      
      public async Task<Result> LogoutAsync(LogoutRequestDTO request)
      {
-         
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.RefreshToken == request.RefreshToken);
+            
+            if (user == null)
+            {
+                throw new ValidationException("Invalid refresh token");
+            }
+            
+            user.RefreshToken = null;
+            user.RefreshTokenExpiryTime = DateTime.MinValue;
+            
+            await _context.SaveChangesAsync();
+            
+            return Result.Success("Logout successful");
      }
 }
