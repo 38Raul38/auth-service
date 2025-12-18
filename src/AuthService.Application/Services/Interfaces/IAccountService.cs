@@ -9,6 +9,6 @@ using System.Threading.Tasks;
 
 public interface IAccountService
 {
-    Task<Result> ChangePasswordAsync(ChangePasswordRequest.ChangePasswordRequestDTO requestDTO, CancellationToken cancellationToken = default);
-    Task<Result> ChangeEmailAsync(ChangeEmailRequest.ChangeEmailRequestDTO requestDTO, CancellationToken cancellationToken = default);
+    Task<Result> ChangePasswordAsync(string userId, ChangePasswordRequest.ChangePasswordRequestDTO request);
+    Task<Result> ChangeEmailAsync(string userId, ChangeEmailRequest.ChangeEmailRequestDTO request);
 }
