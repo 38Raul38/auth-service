@@ -9,7 +9,7 @@ public class EmailSender
     private readonly SmtpClient _smtpClient;
     private readonly IConfiguration _configuration;
 
-    public EmailSender(SmtpClient smtpClient, IConfiguration configuration)
+    public EmailSender(IConfiguration configuration)
     {
         _configuration = configuration;
         _smtpClient = new()

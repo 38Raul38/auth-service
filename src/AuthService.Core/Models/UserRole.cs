@@ -1,4 +1,6 @@
-﻿namespace AuthService.Core.Models;
+﻿using System.ComponentModel.DataAnnotations.Schema;
+
+namespace AuthService.Core.Models;
 
 public class UserRole
 {

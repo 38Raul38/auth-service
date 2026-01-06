@@ -13,7 +13,7 @@ public class AccountService : IAccountService
     private readonly IPasswordHasherService _passwordHasherService;
 
     
-    public AccountService(UserDbContext context, PasswordHasherService passwordHasherService)
+    public AccountService(UserDbContext context, IPasswordHasherService passwordHasherService)
     {
         _context = context;
         _passwordHasherService = passwordHasherService;

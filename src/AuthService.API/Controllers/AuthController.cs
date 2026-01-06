@@ -49,4 +49,11 @@ public class AuthController: ControllerBase
         var res = await _authService.LogoutAsync(request);
         return Ok(res);
     }
+    
+    [Authorize]
+    [HttpGet("test")]
+    public IActionResult Test()
+    {
+        return Ok("Authorized");
+    }
 }

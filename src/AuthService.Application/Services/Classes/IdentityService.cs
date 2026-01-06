@@ -9,7 +9,7 @@ using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 namespace AuthService.Application.Services.Classes;
 
-public class AuthService : IAuthService
+public class IdentityService : IAuthService
 {
      private readonly IMapper _mapper;
      private readonly UserDbContext _context;
@@ -17,7 +17,7 @@ public class AuthService : IAuthService
      private readonly TokenManager _tokenManager;
      private readonly EmailSender _emailSender;
      
-     public AuthService(IMapper mapper, UserDbContext context, IPasswordHasherService passwordHasherService, TokenManager tokenManager, EmailSender emailSender)
+     public IdentityService(IMapper mapper, UserDbContext context, IPasswordHasherService passwordHasherService, TokenManager tokenManager, EmailSender emailSender)
      {
          _mapper = mapper;
          _context = context;
@@ -77,6 +77,7 @@ public class AuthService : IAuthService
 
          user.RefreshToken = refreshToken;
          user.RefreshTokenExpiryTime = RefreshTokenExpiryTime;
+         await _context.SaveChangesAsync();
 
          var response = new AuthResponseDTO
          {
