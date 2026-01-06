@@ -14,7 +14,7 @@ public class TokenManager
 
     public TokenManager(IConfiguration configuration)
     {
-        configuration = _configuration;
+        _configuration = configuration;
     }
 
     public async Task<string> CreateTokenAsync(User user, IEnumerable<string> roles)
