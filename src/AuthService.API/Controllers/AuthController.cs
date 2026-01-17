@@ -13,10 +13,20 @@ namespace AuthService.API.Controllers;
 public class AuthController: ControllerBase
 {
     private readonly IAuthService _authService;
+    private readonly IGoogleAuthService _googleAuthService;
     
-    public AuthController(IAuthService authService)
+    public AuthController(IAuthService authService, IGoogleAuthService googleAuthService)
     {
         _authService = authService;
+        _googleAuthService = googleAuthService;
+    }
+    
+    [HttpPost("google-login")]
+    public async Task<IActionResult> GoogleLogin([FromBody] GoogleLoginRequest request)
+    {
+        var response = await _googleAuthService.GoogleLoginAsync(request.Credential);
+        
+        return Ok(response);
     }
 
     [HttpPost("register")]
