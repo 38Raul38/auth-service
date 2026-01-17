@@ -9,19 +9,19 @@ namespace AuthService.Application.Validators;
     {
         public RegisterRequestDTOValidator()
         {
-            RuleFor(x => x.Name)
+            RuleFor(x => x.FullName)
                 .NotEmpty()
                 .WithMessage("Name is required")
                 .Matches(RegexPatterns.Username)
                 .MaximumLength(30)
                 .WithMessage("Name must be at most 30 characters");
             
-            RuleFor(x => x.Surname)
-                .NotEmpty()
-                .WithMessage("Surname is required")
-                .Matches(RegexPatterns.Username)
-                .MaximumLength(30)
-                .WithMessage("Surname must be at most 30 characters");
+            // RuleFor(x => x.Surname)
+            //     .NotEmpty()
+            //     .WithMessage("Surname is required")
+            //     .Matches(RegexPatterns.Username)
+            //     .MaximumLength(30)
+            //     .WithMessage("Surname must be at most 30 characters");
             
             RuleFor(x => x.Email)
                 .NotEmpty()

@@ -9,58 +9,85 @@ using Scalar.AspNetCore;
 using static Microsoft.AspNetCore.Builder.WebApplication;
 
 var builder = CreateBuilder(args);
+
+// Controllers
 builder.Services.AddControllers();
 
-
+// OpenAPI / Scalar
 builder.Services.AddOpenApi();
 
+// DbContext
 builder.Services.AddDbContext<UserDbContext>(options =>
-    options.UseNpgsql(builder.Configuration.GetConnectionString("AuthServiceDbConnection")));
+    options.UseNpgsql(
+        builder.Configuration.GetConnectionString("AuthServiceDbConnection")
+    )
+);
 
-builder.Services.AddAutoMapper( AppDomain.CurrentDomain.GetAssemblies() );
+// AutoMapper
+builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
+// DI
 builder.Services.AddScoped<EmailSender>();
 builder.Services.AddScoped<TokenManager>();
 builder.Services.AddScoped<IAuthService, IdentityService>();
 builder.Services.AddScoped<IAccountService, AccountService>();
 builder.Services.AddScoped<IPasswordHasherService, PasswordHasherService>();
 
-builder.Services.AddAuthentication(options =>
+// ======================
+// CORS (FIXED)
+// ======================
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowReactApp", policy =>
     {
-        options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-        options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-    })
-    .AddJwtBearer(options =>
-    {
-        options.Events = new JwtBearerEvents
-        {
-            OnAuthenticationFailed = ctx =>
-            {
-                Console.WriteLine("AUTH FAILED: " + ctx.Exception.Message);
-                return Task.CompletedTask;
-            }
-        };
-        
-        options.TokenValidationParameters = new TokenValidationParameters
-        {
-            ValidateAudience = false,
-            ValidateIssuer = false,
-            ValidateIssuerSigningKey = true,
-            ValidateLifetime = true,
-            ClockSkew = TimeSpan.FromMinutes(5),
-            ValidIssuer = builder.Configuration["JWT:Issuer"],
-            ValidAudience = builder.Configuration["JWT:Audience"],
-            IssuerSigningKey = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(builder.Configuration["JWT:SecretKey"]))
-        };
+        policy
+            .WithOrigins("http://localhost:5173") // порт фронта
+            .AllowAnyHeader()
+            .AllowAnyMethod()
+            .AllowCredentials();
     });
+});
+
+// ======================
+// AUTH
+// ======================
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+})
+.AddJwtBearer(options =>
+{
+    options.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidateAudience = false,
+        ValidateIssuer = false,
+        ValidateIssuerSigningKey = true,
+        ValidateLifetime = true,
+        ClockSkew = TimeSpan.FromMinutes(5),
+        IssuerSigningKey = new SymmetricSecurityKey(
+            System.Text.Encoding.UTF8.GetBytes(
+                builder.Configuration["JWT:SecretKey"]
+            )
+        )
+    };
+});
 
 builder.Services.AddAuthorization();
 
 var app = builder.Build();
+
+// ======================
+// MIDDLEWARE ORDER (CRITICAL)
+// ======================
+app.UseCors("AllowReactApp");   // ← СТРОГО ПЕРВЫМ
+
 app.UseAuthentication();
 app.UseAuthorization();
+
 app.MapControllers();
 
+// OpenAPI / Scalar
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();

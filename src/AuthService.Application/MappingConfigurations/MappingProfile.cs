@@ -10,9 +10,9 @@ public class MappingProfile : Profile
     {
         CreateMap<RegisterRequestDTO, User>()
             .ForMember(dest => dest.Email, opt => opt.MapFrom(src => src.Email))
-            .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Name))
-            .ForMember(dest => dest.Username, opt => opt.MapFrom(src => src.Username))
-            .ForMember(dest => dest.Surname, opt => opt.MapFrom(src => src.Surname))
+            .ForMember(dest => dest.FullName, opt => opt.MapFrom(src => src.FullName))
+            // .ForMember(dest => dest.Username, opt => opt.MapFrom(src => src.Username))
+            // .ForMember(dest => dest.Surname, opt => opt.MapFrom(src => src.Surname))
             .ForMember(dest => dest.Password, opt => opt.MapFrom(src => src.Password))
             .ForMember(dest => dest.Id, opt => opt.Ignore())
             .ForMember(dest => dest.Roles, opt => opt.Ignore());

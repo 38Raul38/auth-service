@@ -44,8 +44,8 @@ public class IdentityService : IAuthService
          {
              await _emailSender.SendEmailAsync(
                  user.Email,
-                 user.Username,
-                 $"<h2>Hello, {user.Name}!</h2><p>Welcome to our service!</p>"
+                 user.FullName,
+                 $"<h2>Hello, {user.FullName}!</h2><p>Welcome to our service!</p>"
              );
          }
          catch
