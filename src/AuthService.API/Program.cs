@@ -43,7 +43,7 @@ builder.Services.AddCors(options =>
     {
         policy
             .WithOrigins("http://localhost:5173",
-                         "http://localhost:5174") // порт фронта
+                         "http://localhost:5174", "http://fitcal-service-ui:80", "http://localhost:80") // порт фронта
             .AllowAnyHeader()
             .AllowAnyMethod()
             .AllowCredentials();
