@@ -42,8 +42,12 @@ builder.Services.AddCors(options =>
     options.AddPolicy("AllowReactApp", policy =>
     {
         policy
-            .WithOrigins("http://localhost:5173",
-                         "http://localhost:5174", "http://fitcal-service-ui:80", "http://localhost:80") // порт фронта
+            .WithOrigins("http://localhost",
+                         "http://localhost:5173",
+                         "http://localhost:5174",
+                         "http://fitcal-service-ui:80",
+                         "http://localhost:80"
+                             )// порт фронта
             .AllowAnyHeader()
             .AllowAnyMethod()
             .AllowCredentials();
@@ -97,5 +101,11 @@ if (app.Environment.IsDevelopment())
 }
 
 app.MapGet("/", () => "Hello World!");
+
+using (var scope = app.Services.CreateScope())
+{
+    var dbContext = scope.ServiceProvider.GetRequiredService<UserDbContext>();
+    dbContext.Database.Migrate();
+}
 
 app.Run();
